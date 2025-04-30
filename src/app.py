@@ -33,11 +33,62 @@ def sitemap():
 def handle_hello():
     # This is how you can use the Family datastructure by calling its methods
     members = jackson_family.get_all_members()
-    response_body = {"hello": "world",
-                     "family": members}
+    response_body = members
     return jsonify(response_body), 200
 
 
+@app.route("/members/<int:member>", methods = ["GET"])
+def getMember(member):
+    
+    return jsonify(jackson_family.get_member(member))
+
+
+@app.route("/members/<int:member>", methods = ["DELETE"])
+def delete(member):
+    
+    return jsonify(jackson_family.delete_member(member))
+     
+
+
+@app.route("/members", methods = ["POST"])
+
+def addmember():
+    body = request.get_json()
+    print (body)
+    if body is None:
+        return(jsonify({"msg": "se nesecita body"}))
+    
+    if "first_name" not in body :
+        return(jsonify({"msg": "se nesecita nombre"}))
+    
+    if "age" not in body :
+        return(jsonify({"msg": "se nesecita age"}))
+    
+    if "lucky_numbers" not in body :
+        return(jsonify({"msg": "se nesecita lucky numbers"}))
+    
+
+    newMember = {
+        "id": jackson_family._generate_id(),
+        "first_name": body["first_name"],
+        "last_name": jackson_family.last_name,
+        "age": body["age"],
+        "lucky_numbers": body["lucky_numbers"]
+
+
+    }
+
+    jackson_family.add_member(newMember)
+    
+    print (body)
+
+    return("miembro uploaded")
+
+
+    
+
+
+ 
 
 # This only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
